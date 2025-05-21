@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Goal Tracker</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1 id="title">Goal Tracker</h1>
+      <div class="language-switcher">
+        <button onclick="setLanguage('en')">English</button>
+        <button onclick="setLanguage('ar')">العربية</button>
+        <button onclick="setLanguage('fr')">Français</button>
+      </div>
+    </header>
+
+    <main>
+      <input type="text" id="goalInput" placeholder="Enter your goal" />
+      <button onclick="addGoal()" id="addBtn">Add Goal</button>
+      <ul id="goalList"></ul>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+body {
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f0f4f8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.container {
+  background: white;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 500px;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.language-switcher button {
+  margin: 0 5px;
+  padding: 0.5rem 1rem;
+  border: none;
+  background: #007bff;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.language-switcher button:hover {
+  background: #0056b3;
+}
+
+input[type="text"] {
+  width: 70%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-right: 0.5rem;
+}
+
+button#addBtn {
+  padding: 0.5rem 1rem;
+  background: #28a745;
+  border: none;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+button#addBtn:hover {
+  background: #218838;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 1rem;
+}
+
+li {
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+li button {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 0.3rem 0.6rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+li button:hover {
+  background: #c82333;
+}
+let translations = {
+  en: {
+    title: "Goal Tracker",
+    placeholder: "Enter your goal",
+    addBtn: "Add Goal",
+    deleteBtn: "Delete"
+  },
+  ar: {
+    title: "متابعة الأهداف",
+    placeholder: "أدخل هدفك",
+    addBtn: "أضف الهدف",
+    deleteBtn: "حذف"
+  },
+  fr: {
+    title: "Suivi des Objectifs",
+    placeholder: "Entrez votre objectif",
+    addBtn: "Ajouter",
+    deleteBtn: "Supprimer"
+  }
+};
+
+let currentLang = 'en';
+
+function setLanguage(lang) {
+  currentLang = lang;
+  document.getElementById("title").innerText = translations[lang].title;
+  document.getElementById("goalInput").placeholder = translations[lang].placeholder;
+  document.getElementById("addBtn").innerText = translations[lang].addBtn;
+
+  // تحديث أزرار الحذف لكل عنصر
+  const deleteButtons = document.querySelectorAll(".delete-btn");
+  deleteButtons.forEach(btn => {
+    btn.innerText = translations[lang].deleteBtn;
+  });
+
+  // إذا اللغة العربية، عكس الاتجاه
+  document.body.dir = lang === 'ar' ? 'rtl' : 'ltr';
+}
+
+function addGoal() {
+  const input = document.getElementById("goalInput");
+  const goalText = input.value.trim();
+  if (goalText === "") return;
+
+  const li = document.createElement("li");
+  li.innerHTML = `
+    <span>${goalText}</span>
+    <button class="delete-btn" onclick="deleteGoal(this)">${translations[currentLang].deleteBtn}</button>
+  `;
+  document.getElementById("goalList").appendChild(li);
+  input.value = "";
+}
+
+function deleteGoal(button) {
+  const li = button.parentElement;
+  li.remove();
+}
+
+// تعيين اللغة الافتراضية
+setLanguage(currentLang);
+let translations = {
+  en: {
+    title: "Goal Tracker",
+    placeholder: "Enter your goal",
+    addBtn: "Add Goal",
+    deleteBtn: "Delete"
+  },
+  ar: {
+    title: "متابعة الأهداف",
+    placeholder: "أدخل هدفك",
+    addBtn: "أضف الهدف",
+    deleteBtn: "حذف"
+  },
+  fr: {
+    title: "Suivi des Objectifs",
+    placeholder: "Entrez votre objectif",
+    addBtn: "Ajouter",
+    deleteBtn: "Supprimer"
+  }
+};
+
+let currentLang = 'en';
+
+// تحميل الأهداف من التخزين عند بداية الصفحة
+document.addEventListener("DOMContentLoaded", () => {
+  setLanguage(currentLang);
+  loadGoals();
+});
+
+function setLanguage(lang) {
+  currentLang = lang;
+  document.getElementById("title").innerText = translations[lang].title;
+  document.getElementById("goalInput").placeholder = translations[lang].placeholder;
+  document.getElementById("addBtn").innerText = translations[lang].addBtn;
+
+  const deleteButtons = document.querySelectorAll(".delete-btn");
+  deleteButtons.forEach(btn => {
+    btn.innerText = translations[lang].deleteBtn;
+  });
+
+  document.body.dir = lang === 'ar' ? 'rtl' : 'ltr';
+}
+
+function addGoal() {
+  const input = document.getElementById("goalInput");
+  const goalText = input.value.trim();
+  if (goalText === "") return;
+
+  addGoalToDOM(goalText);
+  saveGoal(goalText);
+  input.value = "";
+}
+
+function addGoalToDOM(goalText) {
+  const li = document.createElement("li");
+  li.innerHTML = `
+    <span>${goalText}</span>
+    <button class="delete-btn" onclick="deleteGoal(this)">${translations[currentLang].deleteBtn}</button>
+  `;
+  document.getElementById("goalList").appendChild(li);
+}
+
+function deleteGoal(button) {
+  const li = button.parentElement;
+  const goalText = li.querySelector("span").innerText;
+  li.remove();
+  removeGoal(goalText);
+}
+
+function saveGoal(goalText) {
+  let goals = JSON.parse(localStorage.getItem("goals")) || [];
+  goals.push(goalText);
+  localStorage.setItem("goals", JSON.stringify(goals));
+}
+
+function removeGoal(goalText) {
+  let goals = JSON.parse(localStorage.getItem("goals")) || [];
+  goals = goals.filter(goal => goal !== goalText);
+  localStorage.setItem("goals", JSON.stringify(goals));
+}
+
+function loadGoals() {
+  let goals = JSON.parse(localStorage.getItem("goals")) || [];
+  goals.forEach(goalText => addGoalToDOM(goalText));
+}
